@@ -1,8 +1,9 @@
 package application;
 
 import entity.base.BaseEntity;
-import entity.base.Hero;
-import entity.hero.Skye;
+import entity.base.Agent;
+import entity.agent.Skye;
+import entity.skills.Skill;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -12,7 +13,7 @@ public class MainTerminal {
 
     private static boolean isGameActive;
 
-    private static ArrayList<Hero> heroes = new ArrayList<Hero>();
+    private static ArrayList<Agent> agents = new ArrayList<Agent>();
 //    private static ArrayList<Counter> kitchenList;
 
     public static void main(String[] args) {
@@ -58,7 +59,7 @@ public class MainTerminal {
         isGameActive = true;
 
         for (int i = 0; i < 2; i++) {
-            heroes.add(new Skye());
+            agents.add(new Skye());
         }
 
         int choice;
@@ -67,7 +68,7 @@ public class MainTerminal {
             System.out.println("=============================");
             System.out.println("Heroes in game: ");
             //Print heroes
-            printArrayList(heroes);
+            printArrayList(agents);
 
             System.out.println("=============================");
             System.out.println("Who are you going to interact with?");
@@ -75,11 +76,11 @@ public class MainTerminal {
 
             // Get Hero
             choice = getChoice();
-            if(choice>0&&choice<heroes.size()+1) {
+            if(choice>0&&choice< agents.size()+1) {
                 // Loop until action is done (Loop in turn)
                 while (true) {
                     System.out.println("=============================");
-                    Hero selected = heroes.get(choice - 1);
+                    Agent selected = agents.get(choice - 1);
                     System.out.println("(" + choice + ") " + selected + "selected");
                     System.out.println("Choose your action");
                     System.out.println("<1> Attack (Using " + selected.getWeapon() + ", dmg: " + selected.getWeapon().getDamage() + ")");
@@ -88,25 +89,39 @@ public class MainTerminal {
                     System.out.println("=============================");
                     int action;
                     action = getChoice();
-
                     //Attack
                     if (action == 1) {
                         System.out.println("=============================");
-                        printArrayList(heroes);
-                        System.out.println((heroes.size() + 1) + ") Cancel");
+                        printArrayList(agents);
+                        System.out.println((agents.size() + 1) + ") Cancel");
                         System.out.println("=============================");
                         System.out.println("Select your target");
                         int target = getChoice();
                         if (target == choice)
                             System.out.println("You cannot attack yourself");
-                        else if (target == heroes.size() + 1) {
+                        else if (target == agents.size() + 1) {
                             continue;
                         } else {
-                            heroes.get(choice - 1).attack(heroes.get(target - 1));
+                            selected.attack(agents.get(target - 1));
                             break;
                         }
                     } else if (action == 2) {
-
+                        System.out.println("=============================");
+                        System.out.println("1) " + selected.getSkill1() );
+                        System.out.println("2) " + selected.getSkill2() );
+                        System.out.println("3) Cancel");
+                        System.out.println("=============================");
+                        int s = getChoice();
+                        Skill skill = selected.getSkill1();
+                        if (s == 1) skill = selected.getSkill1();
+                        else if (s == 2) skill = selected.getSkill2();
+                        System.out.println("=============================");
+                        printArrayList(agents);
+                        System.out.println("=============================");
+                        System.out.println("Select your target");
+                        int target = getChoice();
+                        skill.perform(agents.get(target - 1));
+                        break;
                     } else if (action == 3) {
                         break;
                     }

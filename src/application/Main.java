@@ -70,7 +70,7 @@ public class Main extends Application {
         agentselectcomponent = borderPane;
         Scene scene = new Scene(agentselectcomponent,1280,720, Color.BLACK);
         agentselect = scene;
-        Text text = new Text("                      Agent Select");
+        Text text = new Text("                 Agent Select");
         text.setFont(Font.font(90));
         text.setFill(Color.WHITE);
         agentselectcomponent.setTop(text);

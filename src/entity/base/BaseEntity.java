@@ -1,6 +1,9 @@
 package entity.base;
 
+import java.util.Random;
+
 public abstract class BaseEntity {
+    protected Random random = new Random();
     protected String name;
     protected int hp;
     protected int visibility;
@@ -32,4 +35,8 @@ public abstract class BaseEntity {
     }
 
     public abstract String toString();
+
+    public int getVisibility() {
+        return visibility;
+    }
 }
