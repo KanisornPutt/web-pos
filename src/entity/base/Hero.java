@@ -37,6 +37,9 @@ public abstract class Hero extends BaseEntity {
         super.setHp(hp);
     }
 
+    public Weapon getWeapon() {
+        return weapon;
+    }
 
     public String toString() {
         String s = " (" + hp + ", " + weapon + ") ";

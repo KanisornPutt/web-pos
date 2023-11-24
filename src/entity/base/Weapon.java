@@ -16,4 +16,7 @@ public abstract class Weapon {
     public String toString() {
         return name;
     }
+    public int getDamage() {
+        return damage;
+    }
 }
