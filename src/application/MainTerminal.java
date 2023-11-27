@@ -1,5 +1,7 @@
 package application;
 
+import entity.agent.Brimstone;
+import entity.agent.Omen;
 import entity.base.BaseEntity;
 import entity.base.Agent;
 import entity.agent.Skye;
@@ -58,9 +60,9 @@ public class MainTerminal {
     public static void startGame() {
         isGameActive = true;
 
-        for (int i = 0; i < 2; i++) {
-            agents.add(new Skye());
-        }
+        agents.add(new Skye());
+        agents.add(new Omen());
+        agents.add(new Brimstone());
 
         int choice;
 
@@ -130,6 +132,7 @@ public class MainTerminal {
             }else{
                 System.out.println("Invalid Choice");
             }
+            for (Agent a: agents) a.update();
         }
 //            processUpdate();
 

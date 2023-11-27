@@ -17,7 +17,7 @@ public abstract class BaseEntity {
     }
 
     public void setHp(int hp) {
-        if (hp < 0) {
+        if (hp <= 0) {
             hp = 0;
             this.isAlive = false;
         }

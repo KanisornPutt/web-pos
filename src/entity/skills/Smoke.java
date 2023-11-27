@@ -2,20 +2,20 @@ package entity.skills;
 
 import entity.base.Agent;
 
-public class Flash extends Skill{
+public class Smoke extends Skill{
     private int duration = 7;
-
-    public Flash(String name, int price) {
+    public Smoke(String name, int price) {
         super(name, price);
     }
 
     @Override
     public void perform(Agent target) {
-        target.setFlashed(duration);
+        target.setSmoked(duration);
     }
+
 
     @Override
     public String toString() {
-        return super.toString() + "Flash";
+        return super.toString() + "Smoke";
     }
 }

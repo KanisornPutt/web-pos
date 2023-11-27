@@ -3,10 +3,11 @@ package entity.base;
 import entity.skills.Skill;
 import entity.weapon.Classic;
 
-public abstract class Agent extends BaseEntity {
+public abstract class Agent extends BaseEntity implements Updatable{
     protected Weapon weapon;
     protected int flashed;
     protected int smoked;
+    protected int mollied;
     protected int accuracy;
     protected Skill skill1;
     protected Skill skill2;
@@ -36,12 +37,21 @@ public abstract class Agent extends BaseEntity {
         this.smoked = smoked;
     }
 
+    public void setMollied(int mollied) {
+        if (mollied < 0) mollied = 0;
+        this.mollied = mollied;
+    }
+
     public boolean isFlashed() {
         return flashed > 0;
     }
     public boolean isSmoked() {
         return smoked > 0;
     }
+    public boolean isMollied() {
+        return mollied > 0;
+    }
+
     public void attack(Agent target) {
         int chance = random.nextInt(100);
         if (chance < getAccuracy() && chance < target.getVisiblity()) {
@@ -64,6 +74,7 @@ public abstract class Agent extends BaseEntity {
         String s = " (" + hp + ", " + weapon + ") ";
         if (isFlashed()) s += "(flashed " + flashed + ") ";
         if (isSmoked()) s += "(smoked " + smoked + ") ";
+        if (isMollied()) s += "(mollied " + mollied+ ") ";
         return getName() + s;
     }
 
@@ -93,5 +104,11 @@ public abstract class Agent extends BaseEntity {
     }
     public void performSkill2(Agent target) {
         skill2.perform(target);
+    }
+    public void update() {
+        setSmoked(this.smoked - 1);
+        setFlashed(this.flashed - 1);
+        if (isMollied() && mollied < 5) setHp(getHp() - 15);
+        setMollied(this.mollied - 1);
     }
 }
