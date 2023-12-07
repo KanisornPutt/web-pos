@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GameLogic {
-    private List<Agent> allagentingame;
+    private List<Agent> allagent;
     private List<Agent> player1agent;
     private List<Agent> player2agent;
     private GameLogic instance = null;
@@ -25,9 +25,9 @@ public class GameLogic {
     public void clearInstance(){
         instance = null;
     }
-    public void addAgent(ArrayList<Agent> whichplayeragent,Agent agent){
-        if(whichplayeragent.size()<3){
-            whichplayeragent.add(agent);
+    public void addAgent(Agent agent){
+        if(allagent.size()<6){
+            allagent.add(agent);
         }
     }
 
