@@ -1,7 +1,7 @@
-package entity.base;
+package logic.entity.base;
 
-import entity.skills.Skill;
-import entity.weapon.Classic;
+import logic.entity.skills.Skill;
+import logic.entity.weapon.Classic;
 
 public abstract class Agent extends BaseEntity implements Updatable{
     protected Weapon weapon;

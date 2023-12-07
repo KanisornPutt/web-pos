@@ -1,9 +1,8 @@
-package entity.agent;
+package logic.entity.agent;
 
-import entity.base.Agent;
-import entity.skills.Flash;
-import entity.skills.Molly;
-import entity.skills.Smoke;
+import logic.entity.base.Agent;
+import logic.entity.skills.Molly;
+import logic.entity.skills.Smoke;
 
 public class Brimstone extends Agent {
     public Brimstone() {

@@ -1,4 +1,4 @@
-package entity.base;
+package logic.entity.base;
 
 import java.util.Random;
 

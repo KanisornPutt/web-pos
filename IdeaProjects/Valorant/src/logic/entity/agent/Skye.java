@@ -1,8 +1,8 @@
-package entity.agent;
+package logic.entity.agent;
 
-import entity.base.Agent;
-import entity.skills.Flash;
-import entity.skills.Heal;
+import logic.entity.base.Agent;
+import logic.entity.skills.Flash;
+import logic.entity.skills.Heal;
 
 public class Skye extends Agent {
 

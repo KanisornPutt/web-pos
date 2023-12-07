@@ -1,4 +1,4 @@
-package entity.base;
+package logic.entity.base;
 
 public abstract class Weapon {
     protected String name;

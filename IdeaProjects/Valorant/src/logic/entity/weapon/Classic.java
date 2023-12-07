@@ -1,6 +1,6 @@
-package entity.weapon;
+package logic.entity.weapon;
 
-import entity.base.Weapon;
+import logic.entity.base.Weapon;
 
 public class Classic extends Weapon {
     public Classic() {

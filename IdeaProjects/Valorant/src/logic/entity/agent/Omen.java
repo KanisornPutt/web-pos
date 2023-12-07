@@ -1,8 +1,8 @@
-package entity.agent;
+package logic.entity.agent;
 
-import entity.base.Agent;
-import entity.skills.Flash;
-import entity.skills.Smoke;
+import logic.entity.base.Agent;
+import logic.entity.skills.Flash;
+import logic.entity.skills.Smoke;
 
 public class Omen extends Agent {
     public Omen() {

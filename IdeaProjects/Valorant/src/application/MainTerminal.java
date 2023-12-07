@@ -1,11 +1,11 @@
 package application;
 
-import entity.agent.Brimstone;
-import entity.agent.Omen;
-import entity.base.BaseEntity;
-import entity.base.Agent;
-import entity.agent.Skye;
-import entity.skills.Skill;
+import logic.entity.agent.Brimstone;
+import logic.entity.agent.Omen;
+import logic.entity.base.BaseEntity;
+import logic.entity.base.Agent;
+import logic.entity.agent.Skye;
+import logic.entity.skills.Skill;
 
 import java.util.ArrayList;
 import java.util.Scanner;

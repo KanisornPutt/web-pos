@@ -1,6 +1,6 @@
-package entity.skills;
+package logic.entity.skills;
 
-import entity.base.Agent;
+import logic.entity.base.Agent;
 
 public class Heal extends Skill{
     private int health;

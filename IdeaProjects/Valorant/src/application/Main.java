@@ -9,7 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
@@ -19,7 +19,7 @@ import scene.StartGame;
 
 public class Main extends Application {
     private Scene startgame;
-    private Group startgamecomponent;
+    private VBox startgamecomponent;
     private Scene agentselect;
     private BorderPane agentselectcomponent;
     private Scene ingame;
@@ -40,9 +40,13 @@ public class Main extends Application {
         stage.show();
     }
     private Scene createStartGame(){
-        Group group = new Group();
-        startgamecomponent = group;
+        startgamecomponent = new VBox();
         Scene scene = new Scene(startgamecomponent,1280,720, Color.BLACK);
+        startgamecomponent.setSpacing(100);
+        startgamecomponent.setAlignment(Pos.CENTER);
+        HBox hBox = new HBox();
+        hBox.setAlignment(Pos.BOTTOM_CENTER);
+        hBox.setSpacing(300);
         startgame = scene;
         myImageView.setLayoutX(490);
         myImageView.setLayoutY(100);
@@ -50,8 +54,8 @@ public class Main extends Application {
         myImageView.setFitWidth(300);
         //start button;
         SquareButton start = new SquareButton("START");
-        start.setLayoutX(320);
-        start.setLayoutY(550);
+        //start.setLayoutX(320);
+        //start.setLayoutY(550);
         start.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -60,27 +64,26 @@ public class Main extends Application {
         });
         //option button;
         SquareButton option = new SquareButton("OPTION");
-        option.setLayoutX(740);
-        option.setLayoutY(550);
-        startgamecomponent.getChildren().addAll(start,option,myImageView);
+        //option.setLayoutX(740);
+        //option.setLayoutY(550);
+        hBox.getChildren().addAll(option,start);
+        startgamecomponent.getChildren().addAll(myImageView,hBox);
         return startgame;
     }
     private Scene createAgentSelect(){
         BorderPane borderPane = new BorderPane();
+        HBox hBox = new HBox();
         agentselectcomponent = borderPane;
         Scene scene = new Scene(agentselectcomponent,1280,720, Color.BLACK);
         agentselect = scene;
-        Text text = new Text("                 Agent Select");
+        Text text = new Text("Agent Select");
         text.setFont(Font.font(90));
         text.setFill(Color.WHITE);
         agentselectcomponent.setTop(text);
         AgentPane agentPane = new AgentPane();
         agentPane.setAlignment(Pos.CENTER);
-        agentselectcomponent.setBottom(agentPane);
         //----------------start---------------------//
         SquareButton start = new SquareButton("START");
-        start.setLayoutX(1100);
-        start.setLayoutY(650);
         start.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -89,15 +92,18 @@ public class Main extends Application {
         });
         //---------------back-----------------------//
         SquareButton back = new SquareButton("BACK");
-        back.setLayoutX(180);
-        back.setLayoutY(650);
         back.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 switchScene(startgame);
             }
         });
-        agentselectcomponent.getChildren().addAll(start,back);
+        //---------------get_children----------------//
+        hBox.getChildren().addAll(back,agentPane,start);
+        hBox.setAlignment(Pos.CENTER);
+        agentselectcomponent.setBottom(hBox);
+        BorderPane.setAlignment(text,Pos.CENTER);
+        //agentselectcomponent.getChildren().addAll(start,back);
         return agentselect;
     }
     private void switchScene(Scene scene){

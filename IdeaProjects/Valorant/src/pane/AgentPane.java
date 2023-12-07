@@ -10,7 +10,7 @@ public class AgentPane extends TilePane {
     private ArrayList<CharactorIcon> agentselectpanel;
     private int currentbox;
     public AgentPane(){
-        setPadding(new Insets(100,20,20,20));
+        //setPadding(new Insets(20,20,20,20));
         setHgap(20);
         ArrayList<CharactorIcon> arr = new ArrayList<>();
         agentselectpanel = arr;

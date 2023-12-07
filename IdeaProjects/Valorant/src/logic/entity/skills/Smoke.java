@@ -1,6 +1,6 @@
-package entity.skills;
+package logic.entity.skills;
 
-import entity.base.Agent;
+import logic.entity.base.Agent;
 
 public class Smoke extends Skill{
     private int duration = 7;
