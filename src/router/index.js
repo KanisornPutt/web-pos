@@ -35,6 +35,12 @@ const routes = [
     component: () => import('../views/DashboardView.vue'),
     meta: { requiresAuth: true } 
   },
+  {
+    path: '/redirect',
+    name: 'redirect',
+    component: () => import('../views/RedirectView.vue'),
+    meta: { requiresAuth: false } 
+  },
 ]
 
 const router = createRouter({

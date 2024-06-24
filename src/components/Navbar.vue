@@ -10,16 +10,16 @@
         <a class="nav-link" href="/">Home</a>
 
         <!-- For logged out user -->
-        <a class="nav-link" v-if="!user" href="/login">Login</a>
+        <a class="nav-link" v-if="!isLoggined" href="/login">Login</a>
         <div class="d-grid gap-2 d-sm-block my-auto">
-          <a class=" btn btn-outline-success" v-if="!user" href="/signup">Join Now</a>
+          <a class=" btn btn-outline-success" v-if="!isLoggined" href="/signup">Join Now</a>
         </div>
         
 
         <!-- For logged in user -->
-        <div class="nav-item dropdown" v-if="user">
+        <div class="nav-item dropdown" v-if="isLoggined">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            {{user.username}}
+            User
           </a>
           <ul class="dropdown-menu dropdown-menu-start ">
             <li><a class="dropdown-item" href="#">Profile</a></li>
@@ -28,7 +28,7 @@
             <li><a class="logout-dropdown dropdown-item" @click="logout">Logout</a></li>
           </ul>
         </div>
-        <a class="nav-link" v-if="user" href="/dashboard">Dashboard</a>
+        <a class="nav-link" v-if="isLoggined" href="/dashboard">Dashboard</a>
 
 
       </div>
@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 export default {
@@ -46,16 +46,16 @@ export default {
 
     const store = useStore();
     const router = useRouter();
-
-    const user = computed(() => store.state.auth.user)
+    const isLoggined = computed(() => store.getters['auth/isAuthenticated']);
+    //const isLoggined = ref(true)
 
     const logout = () => {
-      store.commit('auth/setUser', null)
-      store.commit('auth/clearUser')
-      router.push('/');
-    }
+      store.dispatch('auth/logout').then(() => {
+        router.push('/');
+      });
+    };
 
-    return {user, logout, }
+    return { logout, isLoggined }
 
   }
 };
