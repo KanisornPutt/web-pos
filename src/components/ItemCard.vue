@@ -1,9 +1,9 @@
 <template>
   <div
-    class="card m-0"
+    class="card m-0 .w-100"
     data-bs-toggle="modal"
     :data-bs-target="modalId"
-    style="width: 10rem"
+
   >
     <img :src="imgSrc" class="card-img-top fixed-img" :alt="item.name" />
     <div class="card-body">
