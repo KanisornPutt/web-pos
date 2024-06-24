@@ -1,14 +1,12 @@
-import { createStore } from 'vuex'
+import { createStore } from "vuex";
+import axios from "axios";
+import { v4 as uuidv4 } from 'uuid';
+import auth from './modules/auth'
+import cart from "./modules/cart";
 
 export default createStore({
-  state: {
-  },
-  getters: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
   modules: {
-  }
-})
+    auth,
+    cart
+  },
+});

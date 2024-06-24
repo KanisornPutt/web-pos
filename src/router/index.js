@@ -29,12 +29,12 @@ const routes = [
     component: () => import('../views/SignupView.vue'),
     meta: { requiresGuest: true }
   },
-  // {
-  //   path: '/dashboard',
-  //   name: 'dashboard',
-  //   component: () => import('../views/DashboardView.vue'),
-  //   meta: { requiresAuth: true } 
-  // },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('../views/DashboardView.vue'),
+    meta: { requiresAuth: true } 
+  },
 ]
 
 const router = createRouter({
@@ -43,22 +43,22 @@ const router = createRouter({
 })
 
 // Navigation guards
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth) {
-    if (!store.getters.isAuthenticated) {
-      next({ name: 'login' });
-    } else {
-      next();
-    }
-  } else if (to.meta.requiresGuest) {
-    if (store.getters.isAuthenticated) {
-      next({ name: 'home' });
-    } else {
-      next();
-    }
-  } else {
-    next();
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.meta.requiresAuth) {
+//     if (!store.getters.isAuthenticated) {
+//       next({ name: 'login' });
+//     } else {
+//       next();
+//     }
+//   } else if (to.meta.requiresGuest) {
+//     if (store.getters.isAuthenticated) {
+//       next({ name: 'home' });
+//     } else {
+//       next();
+//     }
+//   } else {
+//     next();
+//   }
+// })
 
 export default router

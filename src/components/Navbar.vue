@@ -47,7 +47,7 @@ export default {
     const store = useStore();
     const router = useRouter();
 
-    const user = computed(() => store.state.user)
+    const user = computed(() => store.state.auth.user)
 
     const logout = () => {
       store.commit('setUser', null)

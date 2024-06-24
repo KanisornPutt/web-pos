@@ -51,7 +51,7 @@ export default {
       email.value = email.value.trim().toLowerCase();
 
       try {
-        await store.dispatch("login", {
+        await store.dispatch("auth/login", {
           email: email.value,
           password: password.value,
         });
