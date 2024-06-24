@@ -50,8 +50,8 @@ export default {
     const user = computed(() => store.state.auth.user)
 
     const logout = () => {
-      store.commit('setUser', null)
-      store.commit('clearUser')
+      store.commit('auth/setUser', null)
+      store.commit('auth/clearUser')
       router.push('/');
     }
 

@@ -139,7 +139,7 @@ export default {
   props: ["item"],
   setup(props) {
     const store = useStore();
-    const cart = computed(() => store.state.cart);
+    const cart = computed(() => store.state.cart.cart);
     const itemModal = ref(null);
     const selectedOptions = ref(Array(props.item.options.length).fill(null));
     const invalidMsg = ref("");
@@ -168,7 +168,7 @@ export default {
           amount: amount.value,
           note: note.value.trim(),
         };
-        store.commit('addItemToCart', itemWithSelectedOptions)
+        store.commit('cart/addItemToCart', itemWithSelectedOptions)
         closeModal();
       } else {
         invalidMsg.value = "Please select all of the required options";

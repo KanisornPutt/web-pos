@@ -43,22 +43,22 @@ const router = createRouter({
 })
 
 // Navigation guards
-// router.beforeEach((to, from, next) => {
-//   if (to.meta.requiresAuth) {
-//     if (!store.getters.isAuthenticated) {
-//       next({ name: 'login' });
-//     } else {
-//       next();
-//     }
-//   } else if (to.meta.requiresGuest) {
-//     if (store.getters.isAuthenticated) {
-//       next({ name: 'home' });
-//     } else {
-//       next();
-//     }
-//   } else {
-//     next();
-//   }
-// })
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    if (!store.getters['auth/isAuthenticated']) {
+      next({ name: 'login' });
+    } else {
+      next();
+    }
+  } else if (to.meta.requiresGuest) {
+    if (store.getters['auth/isAuthenticated']) {
+      next({ name: 'home' });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+})
 
 export default router

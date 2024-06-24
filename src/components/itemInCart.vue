@@ -74,7 +74,7 @@ export default {
   setup(props) {
     const store = useStore();
     const item = computed(() => {
-      return store.getters.getItemFromCartById(props.itemId);
+      return store.getters['cart/getItemFromCartById'](props.itemId);
     });
     const collapseId = ref("collapse-" + props.itemId);
     const collapseHref = ref("#collapse-" + props.itemId);
@@ -99,7 +99,7 @@ export default {
     amount.value = item.value.amount
       if (item.value.amount === 0) {
         console.log('calling removeItemFromCart');
-        store.commit("removeItemFromCart", props.itemId);
+        store.commit("cart/removeItemFromCart", props.itemId);
       }
     };
 

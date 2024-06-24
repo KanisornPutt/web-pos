@@ -80,9 +80,9 @@ export default {
   components: { ItemInCart },
   setup() {
     const store = useStore();
-    const cart = computed(() => store.state.cart);
+    const cart = computed(() => store.state.cart.cart);
     const clearCart = () => {
-      store.commit("clearCart");
+      store.commit("cart/clearCart");
     };
 
     const totalPrice = computed(() => {

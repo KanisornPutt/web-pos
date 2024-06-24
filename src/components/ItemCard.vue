@@ -14,15 +14,6 @@
         <p class="card-text">{{ item.price }} THB</p>
       </div>
       <p class="card-text fw-light">Stock: {{ item.stock }}</p>
-      <!-- Button trigger modal -->
-      <button
-        type="button"
-        class="btn btn-primary"
-        data-bs-toggle="modal"
-        :data-bs-target="modalId"
-      >
-        Add to Cart
-      </button>
     </div>
   </div>
 

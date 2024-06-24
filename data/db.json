@@ -132,6 +132,13 @@
       "email": "n@u",
       "password": "1234",
       "items": []
+    },
+    {
+      "id": "28ce",
+      "username": "test user",
+      "email": "t@t",
+      "password": "1234",
+      "items": []
     }
   ]
 }
