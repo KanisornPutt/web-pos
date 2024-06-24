@@ -27,6 +27,7 @@
         Don't have an account yet?
         <a href="/signup" class="text-decoration-none">Signup now</a>
       </p>
+      <p v-show="errorMessage" class="fs-6 text-center text-danger">{{errorMessage}}</p>
     </div>
   </form>
 </template>
@@ -49,9 +50,11 @@ export default {
     const scope = 'email profile'; // adjust scopes as needed
     const state = 'YOUR_STATE'; // a random string to prevent CSRF attacks
 
+    const errorMessage = ref("")
     
     const handleSubmit = async () => {
       try {
+        errorMessage.value = ""
         const loginUser = {
           email: email.value,
           password: password.value
@@ -60,6 +63,7 @@ export default {
         router.push('/dashboard')
       } catch (error) {
         console.error("Error during login:", error);
+        errorMessage.value = "Wrong_UserName_Or_Password"
       }
 
 
@@ -89,7 +93,7 @@ export default {
     };
 
 
-    return { email, password, handleSubmit, loginWithOAuth };
+    return { email, password, handleSubmit, loginWithOAuth, errorMessage };
   },
 };
 </script>

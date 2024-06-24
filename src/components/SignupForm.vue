@@ -25,6 +25,9 @@
     <div class="mb-3">
       <label class="form-label">Password</label>
       <input type="password" class="form-control" v-model="password" placeholder="password must be of 8 charactors or more" />
+      <ul>
+        <li v-for="message in passwordStrengthMessage" :key="message" class="text-danger">{{ message }}</li>
+      </ul>
     </div>
     <div class="my-3 form-check">
       <input type="checkbox" class="form-check-input" v-model="checkbox" />
@@ -47,7 +50,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 
@@ -61,9 +64,30 @@ export default {
     const username = ref("");
     const checkbox = ref(false);
     const errorMessage = ref("")
+    const passwordStrengthMessage = ref([])
+
 
     const router = useRouter();
     const store = useStore()
+
+    const checkPasswordStrength = () => {
+      const passwordValue = password.value;
+      passwordStrengthMessage.value = [];
+      if (passwordValue.length < 8) {
+        passwordStrengthMessage.value.push("Password must be at least 8 characters long.");
+      } 
+      if(!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(passwordValue)){
+        passwordStrengthMessage.value.push("Password must have special character.");
+      }
+      if(!/\d+/.test(passwordValue)){
+        passwordStrengthMessage.value.push("Password must have number.");
+      }
+      if(!/[A-Z]+/.test(passwordValue)){
+        passwordStrengthMessage.value.push("Password must have capital letter.");
+      }
+    };
+
+    watch(password, checkPasswordStrength);
 
     const handleRegister = async() => {
       try {
@@ -106,7 +130,7 @@ export default {
 
     // }
 
-    return { firstname, lastname , show_name,email, password, checkbox, username, handleRegister,errorMessage };
+    return { firstname, lastname , show_name,email, password, checkbox, username, handleRegister,errorMessage, checkPasswordStrength, passwordStrengthMessage };
   },
 };
 </script>
