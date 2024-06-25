@@ -3,8 +3,12 @@ import axios from "axios";
 const state = {
   token: localStorage.getItem("token") || "",
   status: "",
-  show_name: localStorage.getItem("show_name") || "",
-  // user: JSON.parse(localStorage.getItem("user")) || null,
+  user: JSON.parse(localStorage.getItem("user")) || "",
+  clientId: "38181892421-dcmv3r9nvnkbalt85nskg16qtlc8e7n5.apps.googleusercontent.com",
+  redirectUri: "http://localhost:8020/redirect",
+  responseType: "code",
+  scope:  "email profile", // adjust scopes as needed
+  state:"YOUR_STATE", // a random string to prevent CSRF attacks
 };
 
 const mutations = {
@@ -14,44 +18,47 @@ const mutations = {
   auth_success(state, payload) {
     state.status = "";
     state.token = payload.token;
-    state.show_name = payload.show_name;
+    state.user = payload.user;
     localStorage.setItem("token", payload.token);
-    localStorage.setItem("showName", payload.show_name);
+    localStorage.setItem("user", JSON.stringify(payload.user));
   },
+
+  setUser(state, requestUser) {
+    state.user = requestUser;
+    localStorage.setItem("user", JSON.stringify(requestUser));
+  },
+
   auth_error(state) {
     state.status = "error";
   },
   logout(state) {
     state.status = "";
     state.token = "";
-    state.show_name = "";
+    state.user = null;
     localStorage.removeItem("token");
-    localStorage.removeItem("showName");
+    localStorage.removeItem("user");
   },
-  // setUser(state, user) {
-  //   console.log("calling set user");
-  //     state.user = user;
-  //     localStorage.setItem("user", JSON.stringify(user));
-  //   },
-  //   clearUser(state) {
-  //     state.user = null;
-  //     localStorage.removeItem("user");
-  //     console.log("cleared user");
-  //   },
+  loginWithOAuth() {
+    console.log("oauth");
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${state.clientId}&redirect_uri=${state.redirectUri}&response_type=${state.responseType}&scope=${state.scope}&state=${state.state}`;
+    window.location.href = authUrl;
+  },
+  
 };
 
 const actions = {
+
+
   async register({ commit }, user) {
     try {
       commit("auth_request");
       const response = await axios.post("/api/v1/auth/register", user);
       const token = response.data.token;
-      // Handle the token and other data as needed
 
       return response;
     } catch (error) {
       console.log(error);
-      if (error.response.status === 403) {
+      if (error.response.status !== 200) {
         commit("auth_error");
         throw new Error("This email is already registered.");
       } else {
@@ -60,6 +67,8 @@ const actions = {
       }
     }
   },
+
+
   async login({ commit }, user) {
     try {
       commit("auth_request");
@@ -73,8 +82,9 @@ const actions = {
           Authorization: `Bearer ${token}`,
         },
       });
-      const showName = userDetails.data.show_name;
-      commit("auth_success", { token, show_name: "showName" });
+      const userDto = userDetails.data;
+
+      commit("auth_success", { token, user: userDto });
       return response;
     } catch (error) {
       commit("auth_error");
@@ -83,6 +93,8 @@ const actions = {
       throw error;
     }
   },
+
+
   async oauth({ commit }, user) {
     try {
       commit("auth_request");
@@ -93,8 +105,9 @@ const actions = {
           Authorization: `Bearer ${token}`,
         },
       });
-      const showName = userDetails.data.show_name;
-      commit("auth_success", { token, show_name: showName });
+      const userDto = userDetails.data;
+      console.log("UserDto : " ,userDto);
+      commit("auth_success", { token, user: userDto });
       return response;
     } catch (error) {
       console.log(error);
@@ -107,56 +120,39 @@ const actions = {
       }
     }
   },
+
+
+  async updateUser({ state, commit }) {
+    const url = "/api/users/" + state.user.email; // Replace with your API endpoint
+    const token = state.token; // Replace with your actual Bearer token
+
+    try {
+        const response = await axios.get(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        commit("setUser", response.data);
+        
+    } catch (error) {
+        console.error('There was an error!', error);
+        throw error;
+    }
+  },
+
   async logout({ commit }) {
     commit("logout");
     localStorage.removeItem("token");
     delete axios.defaults.headers.common["Authorization"];
   },
-  // async signup(context, { username, email, password }) {
-  //     try {
-  //       const res = await axios.post("http://localhost:3000/users", {
-  //         username: username,
-  //         email: email,
-  //         password: password,
-  //         items: [],
-  //       });
-  //       console.log(res);
-  //       if (res.status === 201) {
-  //         alert("Signed up successfully");
-  //         context.commit("setUser", res.data);
-  //         console.log(username);
-  //       }
-  //     } catch (error) {
-  //       console.error("An error occurred while signing up:", error);
-  //       throw error;
-  //     }
-  //   },
-
-  // async login(context, { email, password }) {
-  //   console.log("Calling auth/login...");
-  //   try {
-  //     const res = await axios.get(
-  //       `http://localhost:3000/users?email=${email}`
-  //     );
-  //     if (res.status === 200 && res.data.length > 0) {
-  //       if (password === res.data[0].password)
-  //         context.commit("setUser", res.data[0]);
-  //       else throw new Error("Incorrect email or password");
-
-  //     } else {
-  //       throw new Error("Incorrect email or password");
-  //     }
-  //   } catch (error) {
-  //     console.error("An error occurred while logging in:", error);
-  //     throw error;
-  //   }
-  // },
 };
 
 const getters = {
   isAuthenticated: (state) => !!state.token,
   authStatus: (state) => state.status,
-  showName: (state) => state.showName,
+  showName: (state) => state.user.showName,
+  user: (state) => state.user,
+  storeId: (state) => state.user.storeId,
 };
 
 export default {

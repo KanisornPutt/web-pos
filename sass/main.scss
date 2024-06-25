@@ -3,7 +3,8 @@
 @import '../node_modules/bootstrap/scss/_variables';
 
 $custom-themed-colors: (
-    "altprimary" : #ff0000
+    "altprimary" : #ff0000,
+    "orange": #ff7300
 );
 
 $theme-colors: map-merge($custom-themed-colors, $theme-colors);

@@ -24,7 +24,7 @@
 
 <script>
 import { ref } from 'vue';
-import ItemModal from '@/components/ItemModal.vue';
+import ItemModal from '@/components/dashboard/ItemModal.vue';
 export default {
   props: ["item"],
   components: {ItemModal},

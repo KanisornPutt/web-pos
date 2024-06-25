@@ -19,10 +19,10 @@
         <!-- For logged in user -->
         <div class="nav-item dropdown" v-if="isLoggined">
           <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            User
+            {{show_name}}
           </a>
           <ul class="dropdown-menu dropdown-menu-start ">
-            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><a class="dropdown-item" href="/profile">Profile</a></li>
             <li><a class="dropdown-item" href="#">Settings</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="logout-dropdown dropdown-item" @click="logout">Logout</a></li>
@@ -47,7 +47,8 @@ export default {
     const store = useStore();
     const router = useRouter();
     const isLoggined = computed(() => store.getters['auth/isAuthenticated']);
-    //const isLoggined = ref(true)
+    const show_name = computed(() => store.getters['auth/showName']);
+
 
     const logout = () => {
       store.dispatch('auth/logout').then(() => {
@@ -55,7 +56,7 @@ export default {
       });
     };
 
-    return { logout, isLoggined }
+    return { logout, isLoggined, show_name }
 
   }
 };

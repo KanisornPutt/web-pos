@@ -20,13 +20,13 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/LoginView.vue'),
+    component: () => import('../views/auth/LoginView.vue'),
     meta: { requiresGuest: true }
   },
   {
     path: '/signup',
     name: 'signup',
-    component: () => import('../views/SignupView.vue'),
+    component: () => import('../views/auth/SignupView.vue'),
     meta: { requiresGuest: true }
   },
   {
@@ -38,8 +38,15 @@ const routes = [
   {
     path: '/redirect',
     name: 'redirect',
-    component: () => import('../views/RedirectView.vue'),
+    component: () => import('../views/auth/RedirectView.vue'),
     meta: { requiresAuth: false } 
+  },
+
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('../views/ProfileView.vue'),
+    meta: { requiresAuth: true } 
   },
 ]
 
@@ -50,6 +57,12 @@ const router = createRouter({
 
 // Navigation guards
 router.beforeEach((to, from, next) => {
+
+  if (store.getters['auth/isAuthenticated']) {
+    store.dispatch('auth/updateUser');
+  }
+
+
   if (to.meta.requiresAuth) {
     if (!store.getters['auth/isAuthenticated']) {
       next({ name: 'login' });

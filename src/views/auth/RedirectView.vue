@@ -46,7 +46,7 @@ export default {
         const registerUser = {
           firstname: "N/A",
           lastname: "N/A",
-          show_name: "Changeme!!!",
+          show_name: userInfo.email,
           email: userInfo.email,
           password: "N/A",
         };
