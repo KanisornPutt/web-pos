@@ -12,7 +12,7 @@
           >
             <div class="col-6 col-md-4 text-center">
               <h4>No Store Found</h4>
-              <button class="btn btn-lg btn-orange text-light">Link to One Now</button>
+              <a class="btn btn-lg btn-orange text-light" href="/storeSetup">Link to One Now</a>
 
             </div>
           </div>

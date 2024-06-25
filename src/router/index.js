@@ -48,6 +48,15 @@ const routes = [
     component: () => import('../views/ProfileView.vue'),
     meta: { requiresAuth: true } 
   },
+
+  {
+    path: '/storeSetup',
+    name: 'storeSetup',
+    component: () => import('../views/StoreSetupView.vue'),
+    meta: { requiresAuth: true,
+            requireNoStore: true
+     } 
+  },
 ]
 
 const router = createRouter({

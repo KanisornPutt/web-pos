@@ -44,9 +44,9 @@ export default {
 
         // Call the oauth action with the user info
         const registerUser = {
-          firstname: "N/A",
-          lastname: "N/A",
-          show_name: userInfo.email,
+          firstname: userInfo.given_name,
+          lastname: userInfo.family_name,
+          show_name: userInfo.given_name,
           email: userInfo.email,
           password: "N/A",
         };

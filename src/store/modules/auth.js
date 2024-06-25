@@ -37,6 +37,7 @@ const mutations = {
     state.user = null;
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("storeData");
   },
   loginWithOAuth() {
     console.log("oauth");
@@ -54,7 +55,6 @@ const actions = {
       commit("auth_request");
       const response = await axios.post("/api/v1/auth/register", user);
       const token = response.data.token;
-
       return response;
     } catch (error) {
       console.log(error);
