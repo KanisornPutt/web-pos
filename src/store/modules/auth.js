@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const state = {
-  token: localStorage.getItem("token") || "",
+  token: localStorage.getItem("token") || null,
   status: "",
-  user: JSON.parse(localStorage.getItem("user")) || "",
+  user: JSON.parse(localStorage.getItem("user")) || null,
   clientId: "38181892421-dcmv3r9nvnkbalt85nskg16qtlc8e7n5.apps.googleusercontent.com",
   redirectUri: "http://localhost:8020/redirect",
   responseType: "code",
@@ -49,7 +49,6 @@ const mutations = {
 
 const actions = {
 
-
   async register({ commit }, user) {
     try {
       commit("auth_request");
@@ -69,14 +68,12 @@ const actions = {
   },
 
 
-  async login({ commit }, user) {
+  async login({ commit, dispatch}, user) {
     try {
       commit("auth_request");
       const response = await axios.post("/api/v1/auth/authenticate", user);
       const token = response.data.token;
-      console.log(response);
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      console.log("/api/users/" + user.email);
       const userDetails = await axios.get("/api/users/" + user.email, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -95,7 +92,7 @@ const actions = {
   },
 
 
-  async oauth({ commit }, user) {
+  async oauth({ commit, dispatch }, user) {
     try {
       commit("auth_request");
       const response = await axios.post("/api/v1/auth/oauth", user);

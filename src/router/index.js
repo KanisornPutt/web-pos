@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import store from '../store/index.js'
+import { computed } from 'vue'
+import { useStore } from 'vuex'
 
 const routes = [
   {
@@ -50,7 +52,7 @@ const routes = [
   },
 
   {
-    path: '/storeSetup',
+    path: '/storesetup',
     name: 'storeSetup',
     component: () => import('../views/StoreSetupView.vue'),
     meta: { requiresAuth: true,
@@ -69,8 +71,20 @@ router.beforeEach((to, from, next) => {
 
   if (store.getters['auth/isAuthenticated']) {
     store.dispatch('auth/updateUser');
+    // store.dispatch('store/updateStore');
   }
 
+  // storeSetup
+  if (to.meta.requireNoStore && to.meta.requiresAuth) {
+    if (!store.getters['auth/isAuthenticated']) {
+      next({ name: 'login' });
+    }
+    else if (store.getters['store/isLinkedToStore']) {
+      next({name: 'dashboard'});
+    } else {
+      next();
+    }
+  }
 
   if (to.meta.requiresAuth) {
     if (!store.getters['auth/isAuthenticated']) {

@@ -8,6 +8,7 @@
           class="form-control"
           v-model="firstname"
           placeholder="firstname"
+          required
         />
       </div>
       <div class="col-6">
@@ -17,6 +18,7 @@
           class="form-control"
           v-model="lastname"
           placeholder="lastname"
+          required
         />
       </div>
     </div>
@@ -28,6 +30,7 @@
         class="form-control"
         v-model="show_name"
         placeholder="username"
+        required
       />
     </div>
     <div class="mb-3">
@@ -38,6 +41,7 @@
         aria-describedby="emailHelp"
         placeholder="name@example.com"
         v-model="email"
+        required
       />
     </div>
     <div class="mb-3">
@@ -47,6 +51,7 @@
         class="form-control"
         v-model="password"
         placeholder="password of 8 charactors or more"
+        required
       />
       <ul>
         <li
@@ -121,7 +126,7 @@ export default {
           "Password must be at least 8 characters long."
         );
       }
-      if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(passwordValue)) {
+      if (!/[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/? ]+/.test(passwordValue)) {
         passwordStrengthMessage.value.push(
           "Password must have special character."
         );
@@ -142,10 +147,10 @@ export default {
       try {
         errorMessage.value = "";
         const registerUser = {
-          firstname: firstname.value,
-          lastname: lastname.value,
-          show_name: show_name.value,
-          email: email.value,
+          firstname: firstname.value.trim(),
+          lastname: lastname.value.trim(),
+          show_name: show_name.value.trim(),
+          email: email.value.trim().toLowerCase(),
           password: password.value,
         };
         await store.dispatch("auth/register", registerUser);

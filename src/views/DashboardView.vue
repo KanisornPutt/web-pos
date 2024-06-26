@@ -5,7 +5,7 @@
         <h4 class="mx-5 my-2">{{ showName }}'s Dashboard</h4>
         <hr class="mx-4" />
 
-        <div v-if="!storeId" class="container">
+        <div v-if="!isLinkedToStore" class="container">
           <div
             class="row justify-content-center align-items-center"
             style="height: 50vh"
@@ -19,7 +19,7 @@
         </div>
 
         <!-- For User's with Store id -->
-        <dir v-if="storeId">
+        <dir v-if="isLinkedToStore">
           <div class="container-fluid">
             <div
               class="d-flex justify-content-between align-items-center mx-4 my-1"
@@ -51,7 +51,7 @@
           </div>
         </dir>
       </div>
-      <div v-if="storeId" class="col-lg-3 col-xl-3 bg-body-tertiary cart">
+      <div v-if="isLinkedToStore" class="col-lg-3 col-xl-3 bg-body-tertiary cart">
         <CartVue />
       </div>
     </div>
@@ -71,9 +71,10 @@ export default {
     const user = computed(() => store.getters["auth/user"]);
     const showName = computed(() => store.getters["auth/showName"]);
     const storeId = computed(() => store.getters["auth/storeId"]);
+    const isLinkedToStore = computed(() => store.getters['store/isLinkedToStore']);
     const cart = computed(() => store.state.cart.cart);
 
-    return { user, cart, storeId, showName };
+    return { user, cart, storeId, showName, isLinkedToStore };
   },
 };
 </script>

@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent>
+  <form @submit.prevent="handleSubmit">
     <div class="mb-3">
       <label class="form-label">Email address</label>
       <input
@@ -21,7 +21,7 @@
     </div>
 
     <div class="row justify-content-center mx-3">
-      <button type="button" class="btn btn-primary col-6 m-3" @click="handleSubmit">
+      <button type="submit" class="btn btn-primary col-6 m-3" >
         Login
       </button>
     </div>
@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 export default {
