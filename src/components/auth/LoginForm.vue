@@ -3,11 +3,12 @@
     <div class="mb-3">
       <label class="form-label">Email address</label>
       <input
-        type="email"
+        type="text"
         class="form-control"
         aria-describedby="emailHelp"
         v-model="email"
         placeholder="name@example.com"
+        required
       />
     </div>
     <div class="mb-3">
@@ -17,6 +18,7 @@
         class="form-control"
         v-model="password"
         placeholder="password"
+        required
       />
     </div>
 
@@ -65,10 +67,11 @@ export default {
       try {
         errorMessage.value = "";
         const loginUser = {
-          email: email.value,
+          email: email.value.toLowerCase(),
           password: password.value,
         };
         await store.dispatch("auth/login", loginUser);
+        await store.dispatch('auth/updateUser');
         router.push("/dashboard");
       } catch (error) {
         console.error("Error during login:", error);

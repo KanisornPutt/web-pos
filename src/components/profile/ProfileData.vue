@@ -22,7 +22,7 @@
       </div>
       <div class="text-start my-3">
         <h6 class="text-secondary">Store</h6>
-        <h5 v-if="user.storeId">Store</h5>
+        <h5 v-if="user.storeId">{{storData.name}}</h5>
         <div v-else>
           <h5>No Store</h5>
           <a class="btn btn-lg btn-orange text-light" href="/storeSetup">Link to One Now</a>
@@ -40,14 +40,15 @@
 </template>
 
 <script>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 export default {
   setup() {
     const store = useStore();
     const user = computed(() => store.getters["auth/user"]);
-
-    return { user };
+    const storData = computed(() => store.getters["store/storeData"])
+    
+    return { user, storData };
   },
 };
 </script>

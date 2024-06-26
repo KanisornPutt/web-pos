@@ -9,6 +9,7 @@ const state = {
   responseType: "code",
   scope:  "email profile", // adjust scopes as needed
   state:"YOUR_STATE", // a random string to prevent CSRF attacks
+  storeData: JSON.parse(localStorage.getItem("storeData")) || null,
 };
 
 const mutations = {
@@ -26,6 +27,12 @@ const mutations = {
   setUser(state, requestUser) {
     state.user = requestUser;
     localStorage.setItem("user", JSON.stringify(requestUser));
+  },
+
+  setStore(state, requestStore) {
+    console.log("Setting Store");
+    state.storeData = requestStore;
+    localStorage.setItem("storeData", JSON.stringify(requestStore));
   },
 
   auth_error(state) {
@@ -80,7 +87,6 @@ const actions = {
         },
       });
       const userDto = userDetails.data;
-
       commit("auth_success", { token, user: userDto });
       return response;
     } catch (error) {
@@ -105,6 +111,7 @@ const actions = {
       const userDto = userDetails.data;
       console.log("UserDto : " ,userDto);
       commit("auth_success", { token, user: userDto });
+
       return response;
     } catch (error) {
       console.log(error);
@@ -129,7 +136,29 @@ const actions = {
                 'Authorization': `Bearer ${token}`
             }
         });
-        commit("setUser", response.data);
+        const userDto = response.data;
+        commit("setUser", userDto);
+        
+        if (userDto.storeId) {
+          const getStoreUrl = "/api/stores/" + state.user.storeId;
+    
+        try {
+            const response = await axios.get(getStoreUrl, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            commit("setStore", response.data);
+            
+        } catch (error) {
+            console.error('There was an error: ', error);
+            if (error.response.status === 404) {
+                console.log("Does not found store");
+            } 
+        }
+        }
+
+        
         
     } catch (error) {
         console.error('There was an error!', error);
@@ -150,6 +179,7 @@ const getters = {
   showName: (state) => state.user.showName,
   user: (state) => state.user,
   storeId: (state) => state.user.storeId,
+  storeData: (state) => state.storeData,
 };
 
 export default {

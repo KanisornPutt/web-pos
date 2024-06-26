@@ -3,11 +3,13 @@ import axios from "axios";
 const state = {
     storeData: JSON.parse(localStorage.getItem("storeData")) || null,
     token: localStorage.getItem("token") || "",
+    user: JSON.parse(localStorage.getItem("user")) || null,
 };
 
 const mutations = {
     setStore(state, requestStore) {
         console.log("Setting Store");
+        console.log(requestStore);
         state.storeData = requestStore;
         localStorage.setItem("storeData", JSON.stringify(requestStore));
     },
@@ -17,25 +19,12 @@ const mutations = {
 const actions = {
     async updateStore({ state, commit }) {
         console.log("updating store...");
-        console.log("token : " + state.token);
         console.log(state.user);
-        const url = "/api/stores/200"; // Replace with your API endpoint
-        const token = state.token; // Replace with your actual Bearer token
-    
-        try {
-            const response = await axios.get(url, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            commit("setStore", response.data);
-            
-        } catch (error) {
-            console.error('There was an error: ', error);
-            if (error.response.status === 404) {
-                console.log("Does not found store");
-            } 
+        if (!state.user) {
+            console.log("No user");
+            return;
         }
+        
       },
 
 
@@ -51,7 +40,7 @@ const actions = {
                   'Content-Type': 'application/json' // If you're sending JSON data
                 }
               });
-            commit("setStore", response.data);
+              commit("auth/setStore", response.data, {root: true});
             return true;
             
         } catch (error) {
@@ -65,7 +54,8 @@ const actions = {
 };
 
 const getters = {
-    isLinkedToStore: (state) => !!state.storeData
+    isLinkedToStore: (state) => !!state.storeData,
+    storeData: (state) => state.storeData,
   
 };
 

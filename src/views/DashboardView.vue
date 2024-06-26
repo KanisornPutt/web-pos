@@ -2,7 +2,15 @@
   <div v-if="user">
     <div class="row">
       <div class="container col-12 col-lg-9 col-xl-9">
-        <h4 class="mx-5 my-2">{{ showName }}'s Dashboard</h4>
+        <div class="row mt-3">
+          <div class="col-6">
+            <h4 class="mx-5 my-2">{{ showName }}'s Dashboard</h4>
+          </div>
+          <div class="col-6 text-end">
+            <h4 v-if="isLinkedToStore" class="mx-5 my-2">{{ storeData.name }}</h4>
+          </div>
+        </div>
+
         <hr class="mx-4" />
 
         <div v-if="!isLinkedToStore" class="container">
@@ -12,8 +20,9 @@
           >
             <div class="col-6 col-md-4 text-center">
               <h4>No Store Found</h4>
-              <a class="btn btn-lg btn-orange text-light" href="/storeSetup">Link to One Now</a>
-
+              <a class="btn btn-lg btn-orange text-light" href="/storeSetup"
+                >Link to One Now</a
+              >
             </div>
           </div>
         </div>
@@ -39,7 +48,7 @@
             </div>
           </div>
 
-          <hr class="mx-4" />
+          <hr class="me-5" />
           <div class="row mb-5 mx-1">
             <div
               class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-4"
@@ -51,7 +60,10 @@
           </div>
         </dir>
       </div>
-      <div v-if="isLinkedToStore" class="col-lg-3 col-xl-3 bg-body-tertiary cart">
+      <div
+        v-if="isLinkedToStore"
+        class="col-lg-3 col-xl-3 bg-body-tertiary cart"
+      >
         <CartVue />
       </div>
     </div>
@@ -59,7 +71,7 @@
 </template>
 
 <script>
-import { computed, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import ItemCard from "@/components/dashboard/ItemCard.vue";
 import CartVue from "@/components/dashboard/Cart.vue";
@@ -71,10 +83,17 @@ export default {
     const user = computed(() => store.getters["auth/user"]);
     const showName = computed(() => store.getters["auth/showName"]);
     const storeId = computed(() => store.getters["auth/storeId"]);
-    const isLinkedToStore = computed(() => store.getters['store/isLinkedToStore']);
+    const storeData = computed(() => store.getters["auth/storeData"]);
+    const isLinkedToStore = computed(
+      () => store.getters["auth/storeData"]
+    );
     const cart = computed(() => store.state.cart.cart);
 
-    return { user, cart, storeId, showName, isLinkedToStore };
+    onMounted(() => {
+      console.log("mounting...");
+    });
+
+    return { user, cart, storeId, showName, isLinkedToStore, storeData };
   },
 };
 </script>

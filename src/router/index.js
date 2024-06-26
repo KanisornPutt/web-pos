@@ -71,7 +71,6 @@ router.beforeEach((to, from, next) => {
 
   if (store.getters['auth/isAuthenticated']) {
     store.dispatch('auth/updateUser');
-    // store.dispatch('store/updateStore');
   }
 
   // storeSetup
