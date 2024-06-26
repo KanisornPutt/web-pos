@@ -17,6 +17,10 @@
         </div>
       </div>
       <div class="text-start my-3">
+        <h6 class="text-secondary">Username</h6>
+        <h5>{{ user.showName }}</h5>
+      </div>
+      <div class="text-start my-3">
         <h6 class="text-secondary">Email</h6>
         <h5>{{ user.email }}</h5>
       </div>
@@ -32,7 +36,7 @@
   </div>
   <div class="col-12 d-flex justify-content-end mb-4">
       <!-- Move the button to a new row and align it to the right -->
-      <button class="btn btn-secondary text-light me-3" style="width: 9rem; height: 3rem;">
+      <button class="btn btn-secondary text-light me-3" style="width: 9rem; height: 3rem;" @click="toggleContent">
         Edit Profile
       </button>
   </div>
@@ -43,12 +47,18 @@
 import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 export default {
-  setup() {
+  emits: ['toggleContent'],
+  setup(props,{emit}) {
     const store = useStore();
     const user = computed(() => store.getters["auth/user"]);
-    const storData = computed(() => store.getters["store/storeData"])
+    const storData = computed(() => store.getters["auth/storeData"])
+
+    const toggleContent = () => {
+      emit('toggleContent');
+    }
+
     
-    return { user, storData };
+    return { user, storData, toggleContent };
   },
 };
 </script>

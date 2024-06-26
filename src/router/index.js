@@ -70,7 +70,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
 
   if (store.getters['auth/isAuthenticated']) {
-    store.dispatch('auth/updateUser');
+    store.dispatch('auth/getUser');
   }
 
   // storeSetup

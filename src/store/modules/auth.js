@@ -4,11 +4,12 @@ const state = {
   token: localStorage.getItem("token") || null,
   status: "",
   user: JSON.parse(localStorage.getItem("user")) || null,
-  clientId: "38181892421-dcmv3r9nvnkbalt85nskg16qtlc8e7n5.apps.googleusercontent.com",
+  clientId:
+    "38181892421-dcmv3r9nvnkbalt85nskg16qtlc8e7n5.apps.googleusercontent.com",
   redirectUri: "http://localhost:8020/redirect",
   responseType: "code",
-  scope:  "email profile", // adjust scopes as needed
-  state:"YOUR_STATE", // a random string to prevent CSRF attacks
+  scope: "email profile", // adjust scopes as needed
+  state: "YOUR_STATE", // a random string to prevent CSRF attacks
   storeData: JSON.parse(localStorage.getItem("storeData")) || null,
 };
 
@@ -27,6 +28,9 @@ const mutations = {
   setUser(state, requestUser) {
     state.user = requestUser;
     localStorage.setItem("user", JSON.stringify(requestUser));
+    if (!requestUser.storeId) {
+      localStorage.removeItem("storeData");
+    }
   },
 
   setStore(state, requestStore) {
@@ -51,11 +55,9 @@ const mutations = {
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${state.clientId}&redirect_uri=${state.redirectUri}&response_type=${state.responseType}&scope=${state.scope}&state=${state.state}`;
     window.location.href = authUrl;
   },
-  
 };
 
 const actions = {
-
   async register({ commit }, user) {
     try {
       commit("auth_request");
@@ -74,8 +76,7 @@ const actions = {
     }
   },
 
-
-  async login({ commit, dispatch}, user) {
+  async login({ commit, dispatch }, user) {
     try {
       commit("auth_request");
       const response = await axios.post("/api/v1/auth/authenticate", user);
@@ -97,7 +98,6 @@ const actions = {
     }
   },
 
-
   async oauth({ commit, dispatch }, user) {
     try {
       commit("auth_request");
@@ -109,7 +109,7 @@ const actions = {
         },
       });
       const userDto = userDetails.data;
-      console.log("UserDto : " ,userDto);
+      console.log("UserDto : ", userDto);
       commit("auth_success", { token, user: userDto });
 
       return response;
@@ -125,44 +125,62 @@ const actions = {
     }
   },
 
-
-  async updateUser({ state, commit }) {
+  async getUser({ state, commit }) {
     const url = "/api/users/" + state.user.email; // Replace with your API endpoint
     const token = state.token; // Replace with your actual Bearer token
 
     try {
-        const response = await axios.get(url, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        const userDto = response.data;
-        commit("setUser", userDto);
-        
-        if (userDto.storeId) {
-          const getStoreUrl = "/api/stores/" + state.user.storeId;
-    
-        try {
-            const response = await axios.get(getStoreUrl, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            commit("setStore", response.data);
-            
-        } catch (error) {
-            console.error('There was an error: ', error);
-            if (error.response.status === 404) {
-                console.log("Does not found store");
-            } 
-        }
-        }
+      const response = await axios.get(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const userDto = response.data;
+      commit("setUser", userDto);
 
-        
-        
+      if (userDto.storeId) {
+        const getStoreUrl = "/api/stores/" + state.user.storeId;
+
+        try {
+          const response = await axios.get(getStoreUrl, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          commit("setStore", response.data);
+        } catch (error) {
+          console.error("There was an error: ", error);
+          if (error.response.status === 404) {
+            console.log("Does not found store");
+          }
+        }
+      } else {
+        localStorage.removeItem("storeData");
+      }
     } catch (error) {
-        console.error('There was an error!', error);
-        throw error;
+      console.error("There was an error!", error);
+      throw error;
+    }
+  },
+
+  async updateUser({ commit }, payload) {
+    console.log("updating user");
+    const url = "api/users/" + state.user.userId; // Replace with your API endpoint
+    const token = state.token; // Replace with your actual Bearer token
+    const userChangeRequest = payload;
+    try {
+      const response = await axios.put(url, userChangeRequest, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json", // If you're sending JSON data
+        },
+      });
+      const userDto = response.data;
+      commit("setUser", userDto);
+      return true;
+    } catch (error) {
+      console.error("There was an error : ", error);
+      return false;
     }
   },
 

@@ -71,7 +71,7 @@ export default {
           password: password.value,
         };
         await store.dispatch("auth/login", loginUser);
-        await store.dispatch('auth/updateUser');
+        await store.dispatch('auth/getUser');
         router.push("/dashboard");
       } catch (error) {
         console.error("Error during login:", error);

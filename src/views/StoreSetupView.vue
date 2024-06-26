@@ -157,12 +157,23 @@ export default {
       }
     };
 
-    const joinStore = () => {
+    const joinStore = async () => {
       const joinStoreRequest = {
         storeCode: joinStoreCode.value,
         password: joinStorePassword.value,
       };
       console.log(joinStoreRequest);
+      const validation = await store.dispatch(
+        "store/joinStore",
+        joinStoreRequest
+      );
+      if (validation) {
+        router.push("/dashboard");
+      } else {
+        alert("Inccorect Store code or password");
+        createStoreCode.value = "";
+        createStorePassword.value = "";
+      }
     };
 
     return {
