@@ -29,11 +29,11 @@
       <div class="text-start my-3">
         <h6 class="text-secondary">Username</h6>
         <input
-            type="text"
-            class="border border-secondary rounded-1"
-            v-model="showName"
-            style="width: 95%"
-          />
+          type="text"
+          class="border border-secondary rounded-1"
+          v-model="showName"
+          style="width: 95%"
+        />
       </div>
       <div class="text-start my-3">
         <h6 class="text-secondary">Email</h6>
@@ -47,24 +47,24 @@
             type="button"
             class="btn btn-danger"
             data-bs-toggle="modal"
-            data-bs-target="#exampleModal"
+            data-bs-target="#leavingStoreModal"
           >
             Leave Store
           </button>
         </div>
 
-        <!-- Modal -->
+        <!-- Leaving Store Modal -->
         <div
           class="modal fade"
-          id="exampleModal"
+          id="leavingStoreModal"
           tabindex="-1"
-          aria-labelledby="exampleModalLabel"
+          aria-labelledby="leavingStorelebal"
           aria-hidden="true"
         >
           <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">
+                <h1 class="modal-title fs-5" id="leavingStoreLabel">
                   Leaving Store
                 </h1>
                 <button
@@ -98,6 +98,7 @@
             </div>
           </div>
         </div>
+
         <div v-if="!user.storeId">
           <h5>No Store</h5>
           <a class="btn btn-lg btn-orange text-light" href="/storeSetup"
@@ -107,28 +108,98 @@
       </div>
     </div>
   </div>
-  <div class="col-12 d-flex justify-content-end mb-4">
-    <!-- Move the button to a new row and align it to the right -->
-    <button
-      class="btn btn-secondary text-light me-3"
-      style="width: 9rem; height: 3rem"
-      @click="toggleContent"
-    >
-      Discard Changes
-    </button>
-    <button
-      class="btn btn-success text-light me-3"
-      style="width: 9rem; height: 3rem"
-      @click="saveChanges"
-    >
-      Save Changes
-    </button>
+
+  <!-- Footer -->
+  <div class="row p-3">
+    <div class="col-4 d-flex justify-content-start mb-4">
+      <button
+        class="btn btn-danger text-light me-3"
+        style="width: 9rem; height: 3rem"
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#deleteAccountModal"
+      >
+        Delete Account
+      </button>
+
+      <!-- Delete Account Modal -->
+      <div
+        class="modal fade"
+        id="deleteAccountModal"
+        tabindex="-1"
+        aria-labelledby="deleteAccountModal"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="deleteAccountLabel">
+                Deleting Account
+              </h1>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <h4>Are you sure?</h4>
+              <p>This process cannot be undone.</p>
+              <h5>Please Enter Your Password to Continue</h5>
+              <input
+                type="password"
+                class="border border-secondary rounded-1"
+                v-model="password"
+                style="width: 95%; font-size: 20px"
+                required
+              />
+              <p class="text-danger">{{ errorMsg }}</p>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                cancel
+              </button>
+              <button
+                type="button"
+                class="btn btn-danger"
+                @click="deleteAccount"
+              >
+                Delete Account
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-8 d-flex justify-content-end mb-4">
+      <!-- Move the button to a new row and align it to the right -->
+      <button
+        class="btn btn-secondary text-light me-3"
+        style="width: 9rem; height: 3rem"
+        @click="toggleContent"
+      >
+        Discard Changes
+      </button>
+      <button
+        class="btn btn-success text-light me-3"
+        style="width: 9rem; height: 3rem"
+        @click="saveChanges"
+      >
+        Save Changes
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
+import bootstrapBundle from 'bootstrap/dist/js/bootstrap.bundle';
 export default {
   emits: ["toggleContent"],
   setup(props, { emit }) {
@@ -138,6 +209,8 @@ export default {
     const firstname = ref(user.value.firstname);
     const lastname = ref(user.value.lastname);
     const showName = ref(user.value.showName);
+    const password = ref("");
+    const errorMsg = ref("");
 
     const toggleContent = () => {
       emit("toggleContent");
@@ -148,16 +221,40 @@ export default {
         firstname: firstname.value,
         lastname: lastname.value,
         showName: showName.value,
-      }
-
-      console.log(userChangeRequest);
-      store.dispatch('auth/updateUser', userChangeRequest);
+      };
+      store.dispatch("user/updateUser", userChangeRequest);
       emit("toggleContent");
-    }
+    };
 
     const leaveStore = () => {
-      store.dispatch("store/leaveStore")
-    }
+      store.dispatch("store/leaveStore");
+    };
+
+    const deleteAccount = async () => {
+      const passwordRequest = {
+        password: password.value,
+      };
+      try {
+        const validation = await store.dispatch(
+          "user/checkPassword",
+          passwordRequest
+        );
+        if (validation) {
+          errorMsg.value = "";
+          const modalElement = document.getElementById("deleteAccountModal");
+          const modal = bootstrapBundle.Modal.getInstance(modalElement);
+          modal.hide();
+          store.dispatch("user/deleteUser", passwordRequest);
+          
+        } else {
+          password.value = "";
+          errorMsg.value = "Incorrect password";
+        }
+      } catch (error) {
+        console.error("Error while checking password: ", error);
+        errorMsg.value = "Error occurred while checking password";
+      }
+    };
 
     return {
       user,
@@ -168,7 +265,9 @@ export default {
       showName,
       saveChanges,
       leaveStore,
-
+      password,
+      deleteAccount,
+      errorMsg,
     };
   },
 };

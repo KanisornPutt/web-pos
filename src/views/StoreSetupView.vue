@@ -142,8 +142,6 @@ export default {
         storeCode: createStoreCode.value,
         password: createStorePassword.value,
       };
-      console.log(createStoreRequest);
-
       const validation = await store.dispatch(
         "store/createStore",
         createStoreRequest
@@ -162,7 +160,6 @@ export default {
         storeCode: joinStoreCode.value,
         password: joinStorePassword.value,
       };
-      console.log(joinStoreRequest);
       const validation = await store.dispatch(
         "store/joinStore",
         joinStoreRequest

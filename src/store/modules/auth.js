@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from '@/router'; 
 
 const state = {
   token: localStorage.getItem("token") || null,
@@ -34,7 +35,6 @@ const mutations = {
   },
 
   setStore(state, requestStore) {
-    console.log("Setting Store");
     state.storeData = requestStore;
     localStorage.setItem("storeData", JSON.stringify(requestStore));
   },
@@ -163,31 +163,12 @@ const actions = {
     }
   },
 
-  async updateUser({ commit }, payload) {
-    console.log("updating user");
-    const url = "api/users/" + state.user.userId; // Replace with your API endpoint
-    const token = state.token; // Replace with your actual Bearer token
-    const userChangeRequest = payload;
-    try {
-      const response = await axios.put(url, userChangeRequest, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", // If you're sending JSON data
-        },
-      });
-      const userDto = response.data;
-      commit("setUser", userDto);
-      return true;
-    } catch (error) {
-      console.error("There was an error : ", error);
-      return false;
-    }
-  },
 
   async logout({ commit }) {
     commit("logout");
     localStorage.removeItem("token");
     delete axios.defaults.headers.common["Authorization"];
+    router.push("/")
   },
 };
 
