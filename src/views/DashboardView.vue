@@ -8,7 +8,8 @@
           </div>
           <div class="col-6 text-end">
             <h4 v-if="isLinkedToStore" class="mx-5 my-2">
-              {{ storeData.name }} : {{ user.role }}
+              {{ storeData.name }}
+              <small class="text-secondary">{{ user.role }} </small>
             </h4>
           </div>
         </div>
@@ -35,7 +36,19 @@
             <div
               class="d-flex justify-content-between align-items-center mx-4 my-1"
             >
-              <h4 class="fw-light">All Items</h4>
+              <div class="row">
+                <h4 class="col-6 fw-light">All Items</h4>
+                <button
+                  v-if="isAdmin"
+                  class=" col-6 btn btn-success"
+                  data-bs-toggle="modal"
+                  data-bs-target="#addNewProductModal"
+                  style="width: 60%;"
+                >
+                  Add New Product
+                </button>
+              </div>
+
               <form class="d-flex" role="search">
                 <input
                   class="form-control me-2"
@@ -53,6 +66,7 @@
           <hr class="me-5" />
 
           <!-- Products -->
+          <AddNewProductModal />
 
           <!-- Loaded Product -->
           <div v-if="products">
@@ -73,19 +87,30 @@
             <!-- No Product in store -->
             <div v-else>
               <div class="container-fluid">
-              <div
-                class="row justify-content-center align-items-center"
-                style="height: 50vh"
-              >
-                <div class="col-12 text-center">
-                  <h4 class="m-3">It seems your store has no product.</h4>
-                  <img class="m-3" src="../assets/empty_icon.png" alt="Empty" style="height: 16vh;">
-                  <br>
-                  <button v-if="isAdmin" class="btn btn-lg btn-success">Add New Product</button>
+                <div
+                  class="row justify-content-center align-items-center"
+                  style="height: 50vh"
+                >
+                  <div class="col-12 text-center">
+                    <h4 class="m-3">It seems your store has no product.</h4>
+                    <img
+                      class="m-3"
+                      src="../assets/empty-icon.png"
+                      alt="Empty"
+                      style="height: 16vh"
+                    />
+                    <br />
+                    <button
+                      v-if="isAdmin"
+                      class="btn btn-lg btn-success"
+                      data-bs-toggle="modal"
+                      data-bs-target="#addNewProductModal"
+                    >
+                      Add New Product
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-              
             </div>
           </div>
 
@@ -119,9 +144,10 @@ import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
 import ItemCard from "@/components/dashboard/ItemCard.vue";
 import CartVue from "@/components/dashboard/Cart.vue";
+import AddNewProductModal from "@/components/dashboard/AddNewProductModal.vue";
 
 export default {
-  components: { ItemCard, CartVue },
+  components: { ItemCard, CartVue, AddNewProductModal },
   setup() {
     const store = useStore();
     const user = computed(() => store.getters["auth/user"]);
@@ -131,7 +157,7 @@ export default {
     const isLinkedToStore = computed(() => store.getters["auth/storeData"]);
     const cart = computed(() => store.state.cart.cart);
     const role = computed(() => store.getters["auth/role"]);
-    const isAdmin = (role.value === "ADMIN")
+    const isAdmin = role.value === "ADMIN";
 
     const products = ref(null);
 
@@ -143,8 +169,7 @@ export default {
     onMounted(async () => {
       products.value = await getProducts(user.value);
       console.log(products.value);
-      if (products.value)
-        console.log(products.value.length);
+      if (products.value) console.log(products.value.length);
     });
 
     return {

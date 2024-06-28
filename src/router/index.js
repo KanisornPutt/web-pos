@@ -67,10 +67,17 @@ const router = createRouter({
 })
 
 // Navigation guards
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
 
   if (store.getters['auth/isAuthenticated']) {
-    store.dispatch('auth/getUser');
+    try {
+      await store.dispatch('auth/getUser');
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      // Handle error fetching user details, maybe redirect to login
+      next({ name: 'login' });
+      return;
+    }
   }
 
   // storeSetup
