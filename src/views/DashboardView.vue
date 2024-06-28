@@ -7,7 +7,7 @@
             <h4 class="mx-5 my-2">{{ showName }}'s Dashboard</h4>
           </div>
           <div class="col-6 text-end">
-            <h4 v-if="isLinkedToStore" class="mx-5 my-2">{{ storeData.name }}</h4>
+            <h4 v-if="isLinkedToStore" class="mx-5 my-2">{{ storeData.name }} : {{user.role}}</h4>
           </div>
         </div>
 
@@ -49,6 +49,14 @@
           </div>
 
           <hr class="me-5" />
+
+
+          <!-- Products -->
+
+          
+
+
+          <!-- If store have products -->
           <div class="row mb-5 mx-1">
             <div
               class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-4"
@@ -90,7 +98,6 @@ export default {
     const cart = computed(() => store.state.cart.cart);
 
     onMounted(() => {
-      console.log("mounting...");
     });
 
     return { user, cart, storeId, showName, isLinkedToStore, storeData };
