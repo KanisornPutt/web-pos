@@ -2,15 +2,15 @@
   <div
     class="modal fade modal-fullscreen-md-down"
     tabindex="-1"
-    aria-labelledby="itemModalLabel"
+    aria-labelledby="productModalLabel"
     aria-hidden="true"
-    ref="itemModal"
+    ref="productModal"
   >
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
       <div class="modal-content">
         <!-- Header -->
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="itemModalLabel">{{ item.name }}</h1>
+          <h1 class="modal-title fs-5" id="productModalLabel">{{ product.name }}</h1>
           <button
             type="button"
             class="btn-close"
@@ -25,26 +25,26 @@
             <!-- Img -->
             <div class="col-6">
               <img
-                :src="imgSrc"
+                src="@/assets/product.png"
                 class="card-img-top fixed-img"
-                :alt="item.name"
+                :alt="product.name"
               />
             </div>
 
             <!-- Body -->
             <div class="col-6">
-              <h5 class="mb-0">{{ item.name }}</h5>
-              <small class=".fs-2 mt-0 mb-2">{{ item.description }}</small>
+              <h5 class="mb-0">{{ product.name }}</h5>
+              <small class=".fs-2 mt-0 mb-2">{{ product.description }}</small>
 
               <!-- Options -->
-              <div v-for="(o, index) in item.options" :key="index">
+              <!-- <div v-for="(o, index) in product.options" :key="index">
                 <p class="mt-2 mb-0">
                   {{ o.for }}
                   <span class=".fs-1 fw-light" v-if="o.req"> required </span>
                 </p>
-                <div v-for="choice in o.choices" :key="choice">
+                <div v-for="choice in o.choices" :key="choice"> -->
                   <!-- Req implementation  -->
-                  <div class="form-check">
+                  <!-- <div class="form-check">
                     <input
                       class="form-check-input"
                       type="radio"
@@ -58,7 +58,7 @@
                     </label>
                   </div>
                 </div>
-              </div>
+              </div> -->
 
               <!-- Notes Textbox -->
               <p class="mt-2 mb-0">Notes</p>
@@ -77,7 +77,7 @@
               <!-- Amount -->
               <p class="mt-2 mb-1">Amount</p>
               <div
-                class="row justify-content-center align-items-center"
+                class="row justify-content-center align-products-center"
                 style="width: 100%"
               >
                 <div class="col-3 text-start">
@@ -136,39 +136,33 @@ import { useStore } from "vuex";
 import bootstrapBundle from "bootstrap/dist/js/bootstrap.bundle";
 
 export default {
-  props: ["item"],
+  props: ["product"],
   setup(props) {
     const store = useStore();
     const cart = computed(() => store.state.cart.cart);
-    const itemModal = ref(null);
-    const selectedOptions = ref(Array(props.item.options.length).fill(null));
+    const productModal = ref(null);
     const invalidMsg = ref("");
     const note = ref("");
     const amount = ref(1);
-    const item = props.item;
+    const product = props.product;
 
-    const imgSrc = computed(() => {
-      try {
-        return require(`@/assets/${props.item.img}`);
-      } catch (e) {
-        console.error(`Image not found: ${props.item.img}`);
-        return "";
-      }
-    });
-
-    const isFormValid = computed(() =>
-      selectedOptions.value.every((option) => option !== null)
-    );
+    // const imgSrc = computed(() => {
+    //   try {
+    //     return require(`@/assets/${props.product.img}`);
+    //   } catch (e) {
+    //     console.error(`Image not found: ${props.product.img}`);
+    //     return "";
+    //   }
+    // });
 
     const handleAddToCart = () => {
-      if (isFormValid.value) {
-        const itemWithSelectedOptions = {
-          ...props.item,
-          selectedOptions: selectedOptions.value,
+      if (true) {
+        const productInCart = {
+          ...props.product,
           amount: amount.value,
           note: note.value.trim(),
         };
-        store.commit('cart/addItemToCart', itemWithSelectedOptions)
+        store.commit('cart/addproductToCart', productInCart)
         closeModal();
       } else {
         invalidMsg.value = "Please select all of the required options";
@@ -179,7 +173,10 @@ export default {
     const setAmount = (load) => {
       amount.value = amount.value + load;
       if (amount.value <= 0) amount.value = 0;
-      if (amount.value >= item.stock) amount.value = item.stock;
+      if (!product.stock) {
+        if (amount.value >= product.stock) 
+          amount.value = product.stock;
+      }
     };
 
     const handleAmountInput = (event) => {
@@ -191,9 +188,8 @@ export default {
     };
 
     const closeModal = () => {
-      const modalElement = itemModal.value;
+      const modalElement = productModal.value;
       const modalInstance = bootstrapBundle.Modal.getInstance(modalElement);
-      selectedOptions.value = Array(props.item.options.length).fill(null);
       amount.value = 1;
       note.value = "";
       if (modalInstance) {
@@ -202,13 +198,10 @@ export default {
     };
 
     return {
-      imgSrc,
       handleAddToCart,
       closeModal,
       handleAmountInput,
-      itemModal,
-      selectedOptions,
-      isFormValid,
+      productModal,
       amount,
       setAmount,
       note,

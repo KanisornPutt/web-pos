@@ -76,10 +76,10 @@
                 <h5>Yes products</h5>
                 <div
                   class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-4"
-                  v-for="item in user.items"
-                  :key="item.name"
+                  v-for="(product, index) in products"
+                  :key="index"
                 >
-                  <ItemCard :item="item" />
+                  <ItemCard :product="product" @click="console.log(product)"/>
                 </div>
               </div>
             </div>

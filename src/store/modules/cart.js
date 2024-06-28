@@ -11,14 +11,14 @@ const state = {
         console.log("Cart cleared");
       },
   
-      addItemToCart(state, item) {
-        item.id = uuidv4(); // Assign a unique ID to the item
-        state.cart.push(item);
-        console.log("Item added to cart:", item);
+      addItemToCart(state, productInCart) {
+        productInCart.cartId = uuidv4(); // Assign a unique ID to the item
+        state.cart.push(productInCart);
+        console.log("Item added to cart:", productInCart);
       },
   
-      removeItemFromCart(state, itemId) {
-        state.cart = state.cart.filter(item => item.id !== itemId);
+      removeItemFromCart(state, cartId) {
+        state.cart = state.cart.filter(productInCart => productInCart.cartId !== cartId);
       },
   };
   

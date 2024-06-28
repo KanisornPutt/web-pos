@@ -203,8 +203,13 @@ export default {
 
         var saveStock = null;
 
-        if (isStockEnabled.value)
+        console.log(isStockEnabled.value);
+
+        if (isStockEnabled.value) {
             saveStock = stock.value;
+        }
+
+        console.log("Stock:", saveStock);
 
         const productDto = {
             name: productName.value.trim(),
