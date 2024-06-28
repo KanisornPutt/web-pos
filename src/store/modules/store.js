@@ -18,7 +18,7 @@ const mutations = {
 
 const actions = {
 
-    async createStore({state, commit}, payload ) {
+    async createStore({state, commit,dispatch}, payload ) {
         console.log("Creating store");
         const url = "/api/stores/" + state.user.userId; // Replace with your API endpoint
         const token = state.token; // Replace with your actual Bearer token
@@ -31,6 +31,7 @@ const actions = {
                 }
               });
               commit("auth/setStore", response.data, {root: true});
+              dispatch("auth/getUser", null, {root: true});
             return true;
             
         } catch (error) {
@@ -86,6 +87,8 @@ const actions = {
 };
 
 const getters = {
+
+ 
   
 };
 

@@ -36,6 +36,7 @@ const mutations = {
 
   setStore(state, requestStore) {
     state.storeData = requestStore;
+    state.user.storeId = requestStore.id;
     localStorage.setItem("storeData", JSON.stringify(requestStore));
   },
 
@@ -109,7 +110,6 @@ const actions = {
         },
       });
       const userDto = userDetails.data;
-      console.log("UserDto : ", userDto);
       commit("auth_success", { token, user: userDto });
 
       return response;
@@ -179,6 +179,8 @@ const getters = {
   user: (state) => state.user,
   storeId: (state) => state.user.storeId,
   storeData: (state) => state.storeData,
+  role: (state) => state.user.role,
+  token: (state) => state.token,
 };
 
 export default {

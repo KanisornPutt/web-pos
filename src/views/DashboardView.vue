@@ -7,7 +7,9 @@
             <h4 class="mx-5 my-2">{{ showName }}'s Dashboard</h4>
           </div>
           <div class="col-6 text-end">
-            <h4 v-if="isLinkedToStore" class="mx-5 my-2">{{ storeData.name }} : {{user.role}}</h4>
+            <h4 v-if="isLinkedToStore" class="mx-5 my-2">
+              {{ storeData.name }} : {{ user.role }}
+            </h4>
           </div>
         </div>
 
@@ -28,7 +30,7 @@
         </div>
 
         <!-- For User's with Store id -->
-        <dir v-if="isLinkedToStore">
+        <div v-if="isLinkedToStore">
           <div class="container-fluid">
             <div
               class="d-flex justify-content-between align-items-center mx-4 my-1"
@@ -50,23 +52,57 @@
 
           <hr class="me-5" />
 
-
           <!-- Products -->
 
-          
+          <!-- Loaded Product -->
+          <div v-if="products">
+            <!-- Have a product -->
+            <div v-if="products.length">
+              <div class="row mb-5 mx-1">
+                <h5>Yes products</h5>
+                <div
+                  class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-4"
+                  v-for="item in user.items"
+                  :key="item.name"
+                >
+                  <ItemCard :item="item" />
+                </div>
+              </div>
+            </div>
 
-
-          <!-- If store have products -->
-          <div class="row mb-5 mx-1">
-            <div
-              class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-4"
-              v-for="item in user.items"
-              :key="item.name"
-            >
-              <ItemCard :item="item" />
+            <!-- No Product in store -->
+            <div v-else>
+              <div class="container-fluid">
+              <div
+                class="row justify-content-center align-items-center"
+                style="height: 50vh"
+              >
+                <div class="col-12 text-center">
+                  <h4 class="m-3">It seems your store has no product.</h4>
+                  <img class="m-3" src="../assets/empty_icon.png" alt="Empty" style="height: 16vh;">
+                  <br>
+                  <button v-if="isAdmin" class="btn btn-lg btn-success">Add New Product</button>
+                </div>
+              </div>
+            </div>
+              
             </div>
           </div>
-        </dir>
+
+          <!-- Loading Product -->
+          <div v-else>
+            <div class="container-fluid">
+              <div
+                class="row justify-content-center align-items-center"
+                style="height: 20vh"
+              >
+                <div class="col-12 text-center text-secondary">
+                  <h1 class="display-6">Loading Product...</h1>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
       <div
         v-if="isLinkedToStore"
@@ -92,15 +128,35 @@ export default {
     const showName = computed(() => store.getters["auth/showName"]);
     const storeId = computed(() => store.getters["auth/storeId"]);
     const storeData = computed(() => store.getters["auth/storeData"]);
-    const isLinkedToStore = computed(
-      () => store.getters["auth/storeData"]
-    );
+    const isLinkedToStore = computed(() => store.getters["auth/storeData"]);
     const cart = computed(() => store.state.cart.cart);
+    const role = computed(() => store.getters["auth/role"]);
+    const isAdmin = (role.value === "ADMIN")
 
-    onMounted(() => {
+    const products = ref(null);
+
+    const getProducts = async (user) => {
+      const result = await store.dispatch("products/getProducts", user);
+      return result;
+    };
+
+    onMounted(async () => {
+      products.value = await getProducts(user.value);
+      console.log(products.value);
+      if (products.value)
+        console.log(products.value.length);
     });
 
-    return { user, cart, storeId, showName, isLinkedToStore, storeData };
+    return {
+      user,
+      cart,
+      storeId,
+      showName,
+      isLinkedToStore,
+      storeData,
+      products,
+      isAdmin,
+    };
   },
 };
 </script>

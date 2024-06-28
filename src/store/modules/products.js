@@ -1,9 +1,6 @@
 import axios from "axios";
 
 const state = {
-    storeData: JSON.parse(localStorage.getItem("storeData")) || null,
-    token: localStorage.getItem("token") || "",
-    user: JSON.parse(localStorage.getItem("user")) || null,
 };
 
 const mutations = {
@@ -13,10 +10,16 @@ const mutations = {
 
 const actions = {
 
-    async getProducts({state}) {
+    async getProducts({rootGetters}, user) {
         console.log("fetching products");
-        const url = `api/products/${state.user.storeId}/${state.user.userId}`; // Replace with your API endpoint
-        const token = state.token; // Replace with your actual Bearer token
+        console.log(user);
+        if (!user.storeId) {
+            console.log("User is not linked to a store");
+            return null;
+        }
+
+        const url = `api/products/${user.storeId}/${user.userId}`; // Replace with your API endpoint
+        const token = rootGetters["auth/token"];
         try {
           const response = await axios.get(url, {
             headers: {
@@ -38,7 +41,7 @@ const actions = {
                 console.error("Error message:", error.message);
             }
             console.error("Error config:", error.config);
-            return Promise.reject(error);
+            return null;
         }
     }
 
