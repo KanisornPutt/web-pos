@@ -1,9 +1,9 @@
 import axios from "axios";
 import router from '@/router'; 
-import { getCookie, deleteCookie } from '@/utils/cookies';
+import Cookies from 'js-cookie';
 
 const state = {
-  token: getCookie("jwt-token") || '',
+  token: '',
   status: "",
   user: JSON.parse(localStorage.getItem("user")) || null,
   clientId:
@@ -59,11 +59,12 @@ const mutations = {
 };
 
 const actions = {
-  async register({ commit }, user) {
+  async register({ commit, dispatch}, user) {
     try {
       commit("auth_request");
       const response = await axios.post("/api/v1/auth/register", user);
       console.log(state.token)
+      dispatch("getUser");
       //const token = response.data.token;
       return response;
     } catch (error) {
@@ -76,14 +77,15 @@ const actions = {
       commit("auth_request");
       const response = await axios.post("/api/v1/auth/authenticate", user);
       const token = response.data.token;
-      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      const userDetails = await axios.get("/api/users/" + user.email, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const userDto = userDetails.data;
-      commit("auth_success", { token, user: userDto });
+      dispatch("getUser");
+      // axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      // const userDetails = await axios.get("/api/users/" + user.email, {
+      //   headers: {
+      //     Authorization: `Bearer ${token}`,
+      //   },
+      // });
+      // const userDto = userDetails.data;
+      //commit("auth_success", { token, user: userDto });
       return response;
     } catch (error) {
       commit("auth_error");
@@ -121,38 +123,35 @@ const actions = {
   },
 
   async getUser({ state, commit }) {
-    const url = "/api/users/" + state.user.email; // Replace with your API endpoint
-    const token = state.token; // Replace with your actual Bearer token
 
+    const url = "/api/users/getsUserFromJwtToken"; // Replace with your API endpoint
+  
     try {
       const response = await axios.get(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        withCredentials: true, // Ensure cookies are sent with the request
       });
       const userDto = response.data;
       commit("setUser", userDto);
-
+  
       if (userDto.storeId) {
         const getStoreUrl = "/api/stores/" + state.user.storeId;
-
+  
         try {
           const response = await axios.get(getStoreUrl, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
+            withCredentials: true, // Ensure cookies are sent with the request
           });
           commit("setStore", response.data);
         } catch (error) {
           console.error("There was an error: ", error);
-          if (error.response.status === 404) {
-            console.log("Does not found store");
+          if (error.response && error.response.status === 404) {
+            console.log("Store not found");
           }
         }
       } else {
         localStorage.removeItem("storeData");
       }
     } catch (error) {
+      localStorage.removeItem("user");//todo remove all the local storage date
       console.error("There was an error!", error);
       throw error;
     }
@@ -161,14 +160,20 @@ const actions = {
 
   async logout({ commit }) {
     commit("logout");
-    localStorage.removeItem("token");
-    delete axios.defaults.headers.common["Authorization"];
+    try{
+      const response = await axios.get("/api/logout",{
+        withCredential: true,
+      });
+    }catch(error){
+      console.error(error);
+    }
+    //delete axios.defaults.headers.common["Authorization"];
     router.push("/")
   },
 };
 
 const getters = {
-  isAuthenticated: (state) => !!state.token,
+  isAuthenticated: (state) => !!state.user,
   authStatus: (state) => state.status,
   showName: (state) => state.user.showName,
   user: (state) => state.user,

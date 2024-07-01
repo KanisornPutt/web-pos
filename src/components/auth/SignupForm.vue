@@ -155,7 +155,7 @@ export default {
         };
         await store.dispatch("auth/register", registerUser);
 
-        router.push("/login");
+        router.push("/dashboard");//change to the dash board
 
         // Handle successful registration (redirect, show success message, etc.)
       } catch (error) {
