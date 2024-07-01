@@ -50,7 +50,7 @@
         <!-- items in cart  -->
         <div class="container-fluid">
           <div v-for="(item, i) in cart" :key="i" class="row my-3">
-            <ItemInCart :itemId="item.id" />
+            <ProductInCart :itemId="item.id" />
           </div>
         </div>
       </div>
@@ -75,9 +75,9 @@
 <script>
 import { computed } from "vue";
 import { useStore } from "vuex";
-import ItemInCart from "./itemInCart.vue";
+import ProductInCart from "./ProductInCart.vue";
 export default {
-  components: { ItemInCart },
+  components: { ProductInCart },
   setup() {
     const store = useStore();
     const cart = computed(() => store.state.cart.cart);

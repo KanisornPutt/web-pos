@@ -13,21 +13,20 @@
         </h5>
         <p class="card-text">{{ product.price }} THB</p>
       </div>
-      <!-- <p class="card-text fw-light">Stock: {{ product.stock }}</p> -->
     </div>
   </div>
 
 
   <!-- Modal -->
-  <ItemModal :product="product" :id="modalName"/>
+  <ProductModal :product="product" :id="modalName"/>
 </template>
 
 <script>
 import { ref } from 'vue';
-import ItemModal from '@/components/dashboard/ItemModal.vue';
+import ProductModal from '@/components/dashboard/ProductModal.vue';
 export default {
   props: ["product"],
-  components: {ItemModal},
+  components: {ProductModal},
   computed: {
     
   },

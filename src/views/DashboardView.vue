@@ -16,6 +16,7 @@
 
         <hr class="mx-4" />
 
+        <!-- User with no store -->
         <div v-if="!isLinkedToStore" class="container">
           <div
             class="row justify-content-center align-items-center"
@@ -33,6 +34,8 @@
         <!-- For User's with Store id -->
         <div v-if="isLinkedToStore">
           <div class="container-fluid">
+            
+            <!-- Header -->
             <div
               class="d-flex justify-content-between align-items-center mx-4 my-1"
             >
@@ -51,14 +54,12 @@
 
               <form class="d-flex" role="search">
                 <input
+                  v-model="searchQuery"
                   class="form-control me-2"
                   type="search"
                   placeholder="Search"
                   aria-label="Search"
                 />
-                <button class="btn btn-outline-success" type="submit">
-                  Search
-                </button>
               </form>
             </div>
           </div>
@@ -71,15 +72,14 @@
           <!-- Loaded Product -->
           <div v-if="products">
             <!-- Have a product -->
-            <div v-if="products.length">
+            <div v-if="filteredProducts.length">
               <div class="row mb-5 mx-1">
-                <h5>Yes products</h5>
                 <div
                   class="col-6 col-sm-3 col-md-3 col-lg-3 col-xl-2 mb-4"
-                  v-for="(product, index) in products"
+                  v-for="(product, index) in filteredProducts"
                   :key="index"
                 >
-                  <ItemCard :product="product" @click="console.log(product)"/>
+                  <ProductCard :product="product" @click="console.log(product)"/>
                 </div>
               </div>
             </div>
@@ -142,12 +142,12 @@
 <script>
 import { computed, onMounted, ref } from "vue";
 import { useStore } from "vuex";
-import ItemCard from "@/components/dashboard/ItemCard.vue";
+import ProductCard from "@/components/dashboard/ProductCard.vue";
 import CartVue from "@/components/dashboard/Cart.vue";
 import AddNewProductModal from "@/components/dashboard/AddNewProductModal.vue";
 
 export default {
-  components: { ItemCard, CartVue, AddNewProductModal },
+  components: { ProductCard, CartVue, AddNewProductModal },
   setup() {
     const store = useStore();
     const user = computed(() => store.getters["auth/user"]);
@@ -160,11 +160,19 @@ export default {
     const isAdmin = role.value === "ADMIN";
 
     const products = ref(null);
+    const searchQuery = ref("");
 
     const getProducts = async (user) => {
       const result = await store.dispatch("products/getProducts", user);
       return result;
     };
+
+    const filteredProducts = computed(() => {
+      if (!products.value) return [];
+      return products.value.filter((product) =>
+        product.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      );
+    });
 
     onMounted(async () => {
       products.value = await getProducts(user.value);
@@ -181,6 +189,8 @@ export default {
       storeData,
       products,
       isAdmin,
+      searchQuery,
+      filteredProducts,
     };
   },
 };
