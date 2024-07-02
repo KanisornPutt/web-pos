@@ -1,10 +1,15 @@
 import axios from "axios";
 import router from '@/router'; 
-import Cookies from 'js-cookie';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
+//import Stomp from 'stompjs';
+
 
 const state = {
   token: '',
-  status: "",
+  status: '',
+  stompClient: null,
+  emailVerify: false,
   user: JSON.parse(localStorage.getItem("user")) || null,
   clientId:
     "38181892421-dcmv3r9nvnkbalt85nskg16qtlc8e7n5.apps.googleusercontent.com",
@@ -39,6 +44,9 @@ const mutations = {
     state.storeData = requestStore;
     localStorage.setItem("storeData", JSON.stringify(requestStore));
   },
+  setIsEmailVerifyStatus(state, verifyStatus) {
+    state.emailVerify = verifyStatus;
+  },
 
   auth_error(state) {
     state.status = "error";
@@ -56,21 +64,59 @@ const mutations = {
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${state.clientId}&redirect_uri=${state.redirectUri}&response_type=${state.responseType}&scope=${state.scope}&state=${state.state}`;
     window.location.href = authUrl;
   },
+  setStompClient(state, stompClient) {
+    state.stompClient = stompClient;
+  },
 };
 
 const actions = {
+  connectWebSocket({ commit, dispatch }) {
+    console.log("lol")
+    const socket = new SockJS("http://localhost:8080/ws");//create new socket connection to the websocket
+    console.log("lol2")
+    const stompClient = new Client({//new stomp client is created.
+      webSocketFactory: () => socket,//webSocketFactory is used to provide the SockJs intance created earlier
+      onConnect: () => {//this callback is executed when the websocket connection is successfully established
+        stompClient.subscribe('/topic/verification', message => {//subscribe to a topic to receive real-time updates
+          console.log('Received message from /topic/verification:', message);
+          const isVerified = JSON.parse(message.body);
+          console.log(isVerified);
+          commit('setIsEmailVerifyStatus', isVerified);
+        });
+      },
+      onStompError: (frame) => {
+        console.error('Broker reported error: ' + frame.headers['message']);
+        console.error('Additional details: ' + frame.body);//The onStompError callback handles any errors reported by the STOMP broker, logging them to the console.
+      },
+    });
+
+    stompClient.activate();//activate the stomp client
+    commit('setStompClient', stompClient);
+  },
   async register({ commit, dispatch}, user) {
     try {
+      await dispatch("connectWebSocket");
       commit("auth_request");
-      const response = await axios.post("/api/v1/auth/register", user);
-      console.log(state.token)
-      dispatch("getUser");
-      //const token = response.data.token;
+      const response = await axios.post("/api/v1/auth/getRegisterEmail", user);
+      console.log(response);
       return response;
     } catch (error) {
       throw error;
     }
   },
+
+  // async register({ commit, dispatch}, user) {
+  //   try {
+  //     commit("auth_request");
+  //     const response = await axios.post("/api/v1/auth/register", user);
+  //     console.log(state.token)
+  //     dispatch("getUser");
+  //     //const token = response.data.token;
+  //     return response;
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // },
 
   async login({ commit, dispatch }, user) {
     try {

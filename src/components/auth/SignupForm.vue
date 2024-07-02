@@ -81,7 +81,7 @@
     <div class="row justify-content-center mt-2 mx-3">
       <button
         type="button"
-        @click="loginWithOAuth"
+        @click="click"
         class="btn btn-primary col-6"
       >
         Continue with Google
@@ -95,11 +95,12 @@
         {{ errorMessage }}
       </p>
     </div>
+    <p> {{isVerify ? "yes":"no"}} </p>
   </form>
 </template>
 
 <script>
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 
@@ -117,6 +118,7 @@ export default {
 
     const router = useRouter();
     const store = useStore();
+    const isVerify = computed(() => store.state.emailVerify);
 
     const checkPasswordStrength = () => {
       const passwordValue = password.value;
@@ -155,7 +157,7 @@ export default {
         };
         await store.dispatch("auth/register", registerUser);
 
-        router.push("/dashboard");//change to the dash board
+        //router.push("/dashboard");//change to the dash board
 
         // Handle successful registration (redirect, show success message, etc.)
       } catch (error) {
@@ -180,6 +182,7 @@ export default {
       checkPasswordStrength,
       passwordStrengthMessage,
       loginWithOAuth,
+      isVerify
     };
   },
 };
